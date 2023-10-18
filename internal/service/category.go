@@ -18,7 +18,6 @@ func NewCategoryService(categoryDB database.Category) *CategoryService {
 }
 
 func (c *CategoryService) CreateCategory(ctx context.Context, in *pb.CreateCategoryRequest) (*pb.Category, error) {
-	// return nil, status.Errorf(codes.Unimplemented, "method CreateCategory not implemented")
 	category, err := c.CategoryDB.Create(in.Name, in.Description)
 	if err != nil {
 		return nil, err
@@ -33,7 +32,6 @@ func (c *CategoryService) CreateCategory(ctx context.Context, in *pb.CreateCateg
 }
 
 func (c *CategoryService) ListCategories(ctx context.Context, in *pb.Blank) (*pb.CategoryList, error) {
-	// return nil, status.Errorf(codes.Unimplemented, "method ListCategories not implemented")
 	categories, err := c.CategoryDB.FindAll()
 	if err != nil {
 		return nil, err
@@ -52,4 +50,19 @@ func (c *CategoryService) ListCategories(ctx context.Context, in *pb.Blank) (*pb
 	return &pb.CategoryList{
 		Categories: caregoriesResponse,
 	}, nil
+}
+
+func (c *CategoryService) GetCategory(ctx context.Context, in *pb.CategoryGetRequest) (*pb.Category, error) {
+	category, err := c.CategoryDB.FindByID(in.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	response := &pb.Category{
+		Id: category.ID,
+		Name: category.Name,
+		Description: category.Description,
+	}
+
+	return response, nil
 }
