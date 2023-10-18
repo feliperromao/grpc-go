@@ -31,3 +31,25 @@ func (c *CategoryService) CreateCategory(ctx context.Context, in *pb.CreateCateg
 
 	return response, nil
 }
+
+func (c *CategoryService) ListCategories(ctx context.Context, in *pb.Blank) (*pb.CategoryList, error) {
+	// return nil, status.Errorf(codes.Unimplemented, "method ListCategories not implemented")
+	categories, err := c.CategoryDB.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	var caregoriesResponse []*pb.Category
+	for _, category := range categories {
+		caregoryResponse := &pb.Category{
+			Id: 			category.ID,
+			Name: 			category.Name,
+			Description: 	category.Description,
+		}
+		caregoriesResponse = append(caregoriesResponse, caregoryResponse)
+	}
+
+	return &pb.CategoryList{
+		Categories: caregoriesResponse,
+	}, nil
+}
